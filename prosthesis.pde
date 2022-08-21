@@ -1,6 +1,8 @@
-int nb_cols;
-int nb_rows;
-int[][] grid;
+int nb_cols = 50;
+int nb_rows = 50;
+int cell_width = 30;
+int cell_height = 20;
+int[][] grid = new int[nb_cols][nb_rows];
 
 color[] palette = {
   // Retro synthwave
@@ -14,14 +16,14 @@ color[] palette = {
 
 int nb_colours = palette.length;
 
-void setup() {
-  size(500, 500);
-  nb_cols = width;
-  nb_rows = height;
-  grid = new int[nb_cols][nb_rows];
+void settings() {
+  size(nb_cols * cell_width, nb_rows * cell_height);
+}
 
-// Fill cell heights
- for (int i = 0; i < nb_cols; i++) {
+void setup() {
+  background(0); // but should not be seen
+  // Fill cell heights
+  for (int i = 0; i < nb_cols; i++) {
    for (int j = 0; j < nb_rows; j++) {
      grid[i][j] = int(random(nb_colours - 1));
    }
@@ -32,10 +34,11 @@ void setup() {
 void draw() {
   for (int i = 0; i < nb_cols; i++) {
    for (int j = 0; j < nb_rows; j++) {
-     int cell_height = grid[i][j];
-     color cell_colour = palette[cell_height];
+     color cell_colour = palette[grid[i][j]];
      stroke(cell_colour);
-     point(i, j);
+     fill(cell_colour);
+     rect(i * cell_width, j * cell_height, cell_width, cell_height);
    }
  }
+ //saveFrame("synthwave_grid.png");
 }
