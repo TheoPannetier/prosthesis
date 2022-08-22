@@ -1,7 +1,8 @@
-int nb_cols = 50;
-int nb_rows = 50;
-int cell_width = 30;
-int cell_height = 20;
+// Grid setup
+int nb_cols = 40;
+int nb_rows = 40;
+int cell_width = 10;
+int cell_height = 10;
 int[][] grid = new int[nb_cols][nb_rows];
 
 color[] palette = {
@@ -20,12 +21,25 @@ void settings() {
   size(nb_cols * cell_width, nb_rows * cell_height);
 }
 
+// Landscape parameters
+  float mu_x = width / 2.0;
+  float mu_y = height / 2.0;
+  float sigma_x = 10.0;
+  float sigma_y = 10.0;
+  float gaussian_h = nb_colours;
+
 void setup() {
-  background(0); // but should not be seen
+  background(234); // for debug, should not be seen
+  
   // Fill cell heights
   for (int i = 0; i < nb_cols; i++) {
    for (int j = 0; j < nb_rows; j++) {
-     grid[i][j] = int(random(nb_colours - 1));
+     float c_avg_x = (i + 0.5) * cell_width;
+     float c_avg_y = (j + 0.5) * cell_height;
+
+     float c_h = gaussian_2d(c_avg_x, c_avg_y);
+     //c_h *= palette.length; // scale t
+     grid[i][j] = round(c_h);
    }
  }
  
@@ -41,4 +55,10 @@ void draw() {
    }
  }
  //saveFrame("synthwave_grid.png");
+}
+
+float gaussian_2d(float x, float y) {
+  float x_kernel = sq(x - mu_x) / (2.0 * sq(sigma_x));
+  float y_kernel = sq(y - mu_y) / (2.0 * sq(sigma_y));
+  return gaussian_h * exp(-(x_kernel + y_kernel));
 }
