@@ -1,15 +1,25 @@
+// Arm parameters
 float[] wing_origin = {0.0, 100.0};
-float l_humerus = 200.0; 
+float l_humerus = 100.0; 
 float l_ulna = 240.0; 
 float l_hand = 200.0;
 float angle_shoulder = deg_to_rad(30.0);
 float angle_elbow = deg_to_rad(-30.0);
 float angle_wrist = deg_to_rad(10.0);
-//float angle_hand_first_feather = deg_to_rad();
 
+// Feather parameters
+//float angle_hand_first_feather = deg_to_rad();
+int n_primaries = 4;
+int n_secondaries = 4;
+float l_primaries = 200.0;
+float l_secondaries = 100.0;
+
+// Colours
 color col_humerus = #35bfd7;
 color col_ulna = #e8656a;
 color col_hand = #2d9003;
+color col_primaries = #f15025;
+color col_secondaries = #ffa400;
 
 Wing bird_wing;
 
@@ -34,14 +44,16 @@ void draw() {
 class Wing {
   float[] m_shoulder_position;
   float m_l_humerus, m_l_ulna, m_l_hand;
-  // float m_l_feather;
   float m_angle_shoulder, m_angle_elbow, m_angle_wrist;
-  //float m_angle_hand_first_feather;
   
   float[] m_elbow_position = new float[2];
   float[] m_wrist_position = new float[2];
   float[] m_phalanx_position = new float[2];
 
+  // float m_l_feather;
+  // float m_angle_hand_first_feather = 90.0;
+  Feather[] m_plumage;
+  
   Wing(float[] shoulder_position,
        float l_humerus, 
        float l_ulna, 
@@ -72,7 +84,30 @@ class Wing {
     // Find phalanx tip
     m_phalanx_position[0] = m_wrist_position[0] + m_l_hand * cos(m_angle_wrist);
     m_phalanx_position[1] = m_wrist_position[1] + m_l_hand * sin(m_angle_wrist);
-
+    
+    place_plumage();
+  }
+  
+  void place_plumage()
+  {
+    m_plumage = new Feather[n_primaries];
+    
+    // Place primary feathers
+    for(int i = 0; i < n_primaries; ++i) {
+      float spacing = m_l_hand / (n_primaries + 1);
+      float[] feather_root = {
+        m_wrist_position[0] + (i + 1) * spacing * cos(m_angle_wrist),
+        m_wrist_position[1] + (i + 1) * spacing * sin(m_angle_wrist)
+       };
+      float[] feather_tip = {
+        feather_root[0] + l_primaries * cos(deg_to_rad(90.0)),
+        feather_root[1] + l_primaries * sin(deg_to_rad(90.0))
+      };
+      m_plumage[i] = new Feather(feather_root, feather_tip);
+    }
+    
+    // Place secondary feathers
+    
   }
   
   void draw()
@@ -95,7 +130,26 @@ class Wing {
        m_wrist_position[0], m_wrist_position[1],
        m_phalanx_position[0], m_phalanx_position[1]
      );
+     
+     stroke(col_primaries);
+     for (int i = 0; i < n_primaries; ++i) {
+       m_plumage[i].draw();
+     }
  }
+}
+
+class Feather {
+  float[] m_root, m_tip;
+  Feather(float[] root, float[] tip)
+  {
+    m_root = root;
+    m_tip = tip;
+  }
+  
+  void draw()
+  {
+    line(m_root[0], m_root[1], m_tip[0], m_tip[1]);
+  }
 }
 
 float deg_to_rad(float angle_degrees)
