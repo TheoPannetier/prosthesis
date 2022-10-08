@@ -19,7 +19,7 @@ color col_humerus = #35bfd7;
 color col_ulna = #e8656a;
 color col_hand = #2d9003;
 color col_primaries = #f15025;
-color col_secondaries = #ffa400;
+color col_secondaries = #44cef6;
 
 Wing bird_wing;
 
@@ -90,7 +90,7 @@ class Wing {
   
   void place_plumage()
   {
-    m_plumage = new Feather[n_primaries];
+    m_plumage = new Feather[n_primaries + n_secondaries];
     
     // Place primary feathers
     for(int i = 0; i < n_primaries; ++i) {
@@ -107,7 +107,18 @@ class Wing {
     }
     
     // Place secondary feathers
-    
+    for(int i = 0; i < n_secondaries; ++i) {
+      float spacing = m_l_ulna / (n_secondaries + 1);
+      float[] feather_root = {
+        m_elbow_position[0] + (i + 1) * spacing * cos(m_angle_elbow),
+        m_elbow_position[1] + (i + 1) * spacing * sin(m_angle_elbow)
+       };
+      float[] feather_tip = {
+        feather_root[0] + l_secondaries * cos(deg_to_rad(90.0)),
+        feather_root[1] + l_secondaries * sin(deg_to_rad(90.0))
+      };
+      m_plumage[n_primaries + i] = new Feather(feather_root, feather_tip);
+    }
   }
   
   void draw()
@@ -135,6 +146,11 @@ class Wing {
      for (int i = 0; i < n_primaries; ++i) {
        m_plumage[i].draw();
      }
+     stroke(col_secondaries);
+     for (int i = 0; i < n_secondaries; ++i) {
+       m_plumage[n_primaries + i].draw();
+     }
+
  }
 }
 
