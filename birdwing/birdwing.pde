@@ -3,13 +3,15 @@ float[] wing_origin = {0.0, 100.0};
 float l_humerus = 100.0;
 float l_ulna = 240.0;
 float l_hand = 200.0;
-float angle_shoulder = deg_to_rad(30.0);
-float angle_elbow = deg_to_rad(-30.0);
-float angle_wrist = deg_to_rad(10.0);
+float angle_shoulder = deg_to_rad(60.0);
+float angle_elbow = deg_to_rad(-90.0);
+float angle_wrist = deg_to_rad(50.0);
 
 // Feather parameters
-float angle_hand_first_primary = deg_to_rad(10.0);
-float angle_elbow_last_secondary = deg_to_rad(20.0);
+float angle_hand_first_primary = deg_to_rad(5.0);
+float angle_wrist_last_primary = deg_to_rad(0.0);
+float angle_wrist_first_secondary = deg_to_rad(0.0);
+float angle_elbow_last_secondary = deg_to_rad(0.0);
 
 int n_primaries = 4;
 int n_secondaries = 4;
@@ -47,6 +49,7 @@ class Wing {
   float[] m_shoulder_position;
   float m_l_humerus, m_l_ulna, m_l_hand;
   float m_angle_shoulder, m_angle_elbow, m_angle_wrist;
+  float m_angle_ulna, m_angle_hand;
 
   float[] m_elbow_position = new float[2];
   float[] m_wrist_position = new float[2];
@@ -70,34 +73,37 @@ class Wing {
     m_angle_shoulder = angle_shoulder;
     m_angle_elbow = angle_elbow;
     m_angle_wrist = angle_wrist;
+    m_angle_ulna = m_angle_shoulder + m_angle_elbow;
+    m_angle_hand = m_angle_ulna + m_angle_wrist;
 
     // Find elbow
     m_elbow_position[0] = m_shoulder_position[0] + m_l_humerus * cos(m_angle_shoulder);
     m_elbow_position[1] = m_shoulder_position[1] + m_l_humerus * sin(m_angle_shoulder);
 
     // Find wrist
-    m_wrist_position[0] = m_elbow_position[0] + m_l_ulna * cos(m_angle_elbow);
-    m_wrist_position[1] = m_elbow_position[1] + m_l_ulna * sin(m_angle_elbow);
+    m_wrist_position[0] = m_elbow_position[0] + m_l_ulna * cos(m_angle_ulna);
+    m_wrist_position[1] = m_elbow_position[1] + m_l_ulna * sin(m_angle_ulna);
 
     // Find phalanx tip
-    m_phalanx_position[0] = m_wrist_position[0] + m_l_hand * cos(m_angle_wrist);
-    m_phalanx_position[1] = m_wrist_position[1] + m_l_hand * sin(m_angle_wrist);
+    m_phalanx_position[0] = m_wrist_position[0] + m_l_hand * cos(m_angle_hand);
+    m_phalanx_position[1] = m_wrist_position[1] + m_l_hand * sin(m_angle_hand);
 
     place_plumage();
   }
 
   void place_plumage()
   {
-    m_plumage = new Feather[n_primaries + n_secondaries];
-    float[][] roots = new float[n_primaries + n_secondaries][2];
-    float[][] tips = new float[n_primaries + n_secondaries][2];
+    int n_feathers = n_primaries + n_secondaries;
+    m_plumage = new Feather[n_feathers];
+    float[][] roots = new float[n_feathers][2];
+    float[][] tips = new float[n_feathers][2];
 
     // Place primary feather roots
     for (int i = 0; i < n_primaries; ++i) {
       float spacing = m_l_hand / (n_primaries + 1);
       float[] feather_root = {
-        m_wrist_position[0] + (i + 1) * spacing * cos(m_angle_wrist),
-        m_wrist_position[1] + (i + 1) * spacing * sin(m_angle_wrist)
+        m_wrist_position[0] + (i + 1) * spacing * cos(m_angle_hand),
+        m_wrist_position[1] + (i + 1) * spacing * sin(m_angle_hand)
       };
       roots[i] = feather_root;
     }
@@ -106,13 +112,18 @@ class Wing {
     for (int i = 0; i < n_secondaries; ++i) {
       float spacing = m_l_ulna / (n_secondaries + 1);
       float[] feather_root = {
-        m_elbow_position[0] + (i + 1) * spacing * cos(m_angle_elbow),
-        m_elbow_position[1] + (i + 1) * spacing * sin(m_angle_elbow)
+        m_elbow_position[0] + (i + 1) * spacing * cos(m_angle_ulna),
+        m_elbow_position[1] + (i + 1) * spacing * sin(m_angle_ulna)
       };
       roots[n_primaries + i] = feather_root;
     }
     
     // Place primary feather tips
+    //float[] first_tip = {
+    //  roots[0][0] + l_primaries * cos(deg_to_rad(90.0)),
+    //  roots[0][1] + l_primaries * sin(deg_to_rad(90.0))
+    //};
+    //tips[0] = first_tip;
     for (int i = 0; i < n_primaries; ++i) {      
       float[] feather_tip = {
         roots[i][0] + l_primaries * cos(deg_to_rad(90.0)),
@@ -129,7 +140,7 @@ class Wing {
       tips[n_primaries + i] = feather_tip;
     }
 
-    for (int i = 0; i < n_primaries; ++i) {
+    for (int i = 0; i < n_feathers; ++i) {
       m_plumage[i] = new Feather(roots[i], tips[i]);
     }
   }
