@@ -119,11 +119,11 @@ class Wing {
     }
     
     // Place primary feather tips
-    //float[] first_tip = {
-    //  roots[0][0] + l_primaries * cos(deg_to_rad(90.0)),
-    //  roots[0][1] + l_primaries * sin(deg_to_rad(90.0))
-    //};
-    //tips[0] = first_tip;
+    float[] first_tip = {
+      roots[0][0] + l_primaries * cos(m_angle_hand + angle_hand_first_primary),
+      roots[0][1] + l_primaries * sin(deg_to_rad(90.0))
+    };
+    tips[0] = first_tip;
     for (int i = 0; i < n_primaries; ++i) {      
       float[] feather_tip = {
         roots[i][0] + l_primaries * cos(deg_to_rad(90.0)),
