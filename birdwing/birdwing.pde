@@ -131,10 +131,27 @@ class Wing {
     };
     tips[0] = last_tip;
     
-    for (int i = n_primaries - 2; i > 0; --i) {      
+    /// Feathers ray from some origin point determined by this angle:
+    //// gamma
+    //float angle_first_to_last = PI - angle_hand_first_primary - angle_hand_last_primary;
+    //// b
+    float segment_last_to_origin = m_l_hand * sin(angle_hand_first_primary) / sin(angle_hand_last_primary - angle_hand_first_primary);
+    //// Q
+    float[] origin_pos = {
+      m_wrist_position[0] + segment_last_to_origin * cos(PI - angle_hand_last_primary), 
+      m_wrist_position[1] + segment_last_to_origin * sin(PI - angle_hand_last_primary)
+    };
+    
+    for (int i = n_primaries - 2; i > 0; --i) {
+      float[] this_root_pos = roots[i]; // P
+      //// n
+      float segment_origin_to_root = sqrt(sq(this_root_pos[0] - origin_pos[0]) + sq(this_root_pos[1] - origin_pos[1]));
+      //// theta
+      float this_feather_angle = m_angle_hand + asin(segment_last_to_origin * sin(PI - angle_hand_last_primary) / segment_origin_to_root);
+      
       float[] feather_tip = {
-        roots[i][0] + l_primaries * cos(deg_to_rad(90.0)),
-        roots[i][1] + l_primaries * sin(deg_to_rad(90.0))
+        roots[i][0] + l_primaries * cos(this_feather_angle),
+        roots[i][1] + l_primaries * sin(this_feather_angle)
       };
       tips[i] = feather_tip;
     }
