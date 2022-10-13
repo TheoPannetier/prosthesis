@@ -9,14 +9,14 @@ float angle_wrist = deg_to_rad(50.0);
 
 // Feather parameters
 float angle_hand_first_primary = deg_to_rad(5.0);
-float angle_wrist_last_primary = deg_to_rad(0.0);
+float angle_hand_last_primary = deg_to_rad(100.0);
 float angle_wrist_first_secondary = deg_to_rad(0.0);
 float angle_elbow_last_secondary = deg_to_rad(0.0);
 
 int n_primaries = 4;
 int n_secondaries = 4;
-float l_primaries = 200.0;
-float l_secondaries = 100.0;
+float l_primaries = 100.0;
+float l_secondaries = 150.0;
 
 // Colours
 color col_humerus = #35bfd7;
@@ -120,17 +120,25 @@ class Wing {
     
     // Place primary feather tips
     float[] first_tip = {
-      roots[0][0] + l_primaries * cos(m_angle_hand + angle_hand_first_primary),
-      roots[0][1] + l_primaries * sin(deg_to_rad(90.0))
+      roots[n_primaries - 1][0] + l_primaries * cos(m_angle_hand + angle_hand_first_primary),
+      roots[n_primaries - 1][1] + l_primaries * sin(m_angle_hand + angle_hand_first_primary)
     };
-    tips[0] = first_tip;
-    for (int i = 0; i < n_primaries; ++i) {      
+    tips[n_primaries - 1] = first_tip;
+    
+    float[] last_tip = {
+      roots[0][0] + l_primaries * cos(m_angle_hand + angle_hand_last_primary),
+      roots[0][1] + l_primaries * sin(m_angle_hand + angle_hand_last_primary)
+    };
+    tips[0] = last_tip;
+    
+    for (int i = n_primaries - 2; i > 0; --i) {      
       float[] feather_tip = {
         roots[i][0] + l_primaries * cos(deg_to_rad(90.0)),
         roots[i][1] + l_primaries * sin(deg_to_rad(90.0))
       };
       tips[i] = feather_tip;
     }
+    
     // Place secondary feather tips
     for (int i = 0; i < n_secondaries; ++i) {
       float[] feather_tip = {
