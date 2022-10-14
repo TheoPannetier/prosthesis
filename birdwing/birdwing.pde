@@ -10,13 +10,13 @@ float angle_wrist = deg_to_rad(50.0);
 // Feather parameters
 float angle_hand_first_primary = deg_to_rad(5.0);
 float angle_hand_last_primary = deg_to_rad(60.0);
-float angle_wrist_first_secondary = deg_to_rad(0.0);
-float angle_elbow_last_secondary = deg_to_rad(0.0);
+float angle_ulna_first_secondary = deg_to_rad(100.0);
+float angle_ulna_last_secondary = deg_to_rad(130.0);
 
 int n_primaries = 10;
-int n_secondaries = 4;
+int n_secondaries = 10;
 float l_primaries = 100.0;
-float l_secondaries = 150.0;
+float l_secondaries = 120.0;
 
 // Colours
 color col_humerus = #35bfd7;
@@ -100,20 +100,22 @@ class Wing {
 
     // Place primary feather roots
     for (int i = 0; i < n_primaries; ++i) {
-      float spacing = m_l_hand / (n_primaries + 1);
+      float rel_spacing = float(i + 1) / float (n_primaries + 1);
+      float l_spacing = lerp(0, m_l_hand, rel_spacing);
       float[] feather_root = {
-        m_wrist_position[0] + (i + 1) * spacing * cos(m_angle_hand),
-        m_wrist_position[1] + (i + 1) * spacing * sin(m_angle_hand)
+        m_wrist_position[0] + l_spacing * cos(m_angle_hand),
+        m_wrist_position[1] + l_spacing * sin(m_angle_hand)
       };
       roots[i] = feather_root;
     }
 
     // Place secondary feather roots
     for (int i = 0; i < n_secondaries; ++i) {
-      float spacing = m_l_ulna / (n_secondaries + 1);
+      float rel_spacing = float(i + 1) / float (n_secondaries + 1);
+      float l_spacing = lerp(0, m_l_ulna, rel_spacing);
       float[] feather_root = {
-        m_elbow_position[0] + (i + 1) * spacing * cos(m_angle_ulna),
-        m_elbow_position[1] + (i + 1) * spacing * sin(m_angle_ulna)
+        m_elbow_position[0] + l_spacing * cos(m_angle_ulna),
+        m_elbow_position[1] + l_spacing * sin(m_angle_ulna)
       };
       roots[n_primaries + i] = feather_root;
     }
@@ -131,9 +133,11 @@ class Wing {
     
     // Place secondary feather tips
     for (int i = 0; i < n_secondaries; ++i) {
+      float rel_spacing = float(i) / float(n_secondaries - 1);
+      float angle = lerp(angle_ulna_last_secondary, angle_ulna_first_secondary, rel_spacing);
       float[] feather_tip = {
-        roots[n_primaries + i][0] + l_secondaries * cos(deg_to_rad(90.0)),
-        roots[n_primaries + i][1] + l_secondaries * sin(deg_to_rad(90.0))
+        roots[n_primaries + i][0] + l_secondaries * cos(m_angle_ulna + angle),
+        roots[n_primaries + i][1] + l_secondaries * sin(m_angle_ulna + angle)
       };
       tips[n_primaries + i] = feather_tip;
     }
