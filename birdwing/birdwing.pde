@@ -9,11 +9,11 @@ float angle_wrist = deg_to_rad(50.0);
 
 // Feather parameters
 float angle_hand_first_primary = deg_to_rad(5.0);
-float angle_hand_last_primary = deg_to_rad(100.0);
+float angle_hand_last_primary = deg_to_rad(60.0);
 float angle_wrist_first_secondary = deg_to_rad(0.0);
 float angle_elbow_last_secondary = deg_to_rad(0.0);
 
-int n_primaries = 4;
+int n_primaries = 10;
 int n_secondaries = 4;
 float l_primaries = 100.0;
 float l_secondaries = 150.0;
@@ -118,40 +118,13 @@ class Wing {
       roots[n_primaries + i] = feather_root;
     }
     
-    // Place primary feather tips
-    float[] first_tip = {
-      roots[n_primaries - 1][0] + l_primaries * cos(m_angle_hand + angle_hand_first_primary),
-      roots[n_primaries - 1][1] + l_primaries * sin(m_angle_hand + angle_hand_first_primary)
-    };
-    tips[n_primaries - 1] = first_tip;
-    
-    float[] last_tip = {
-      roots[0][0] + l_primaries * cos(m_angle_hand + angle_hand_last_primary),
-      roots[0][1] + l_primaries * sin(m_angle_hand + angle_hand_last_primary)
-    };
-    tips[0] = last_tip;
-    
-    /// Feathers ray from some origin point determined by this angle:
-    //// gamma
-    //float angle_first_to_last = PI - angle_hand_first_primary - angle_hand_last_primary;
-    //// b
-    float segment_last_to_origin = m_l_hand * sin(angle_hand_first_primary) / sin(angle_hand_last_primary - angle_hand_first_primary);
-    //// Q
-    float[] origin_pos = {
-      m_wrist_position[0] + segment_last_to_origin * cos(PI - angle_hand_last_primary), 
-      m_wrist_position[1] + segment_last_to_origin * sin(PI - angle_hand_last_primary)
-    };
-    
-    for (int i = n_primaries - 2; i > 0; --i) {
-      float[] this_root_pos = roots[i]; // P
-      //// n
-      float segment_origin_to_root = sqrt(sq(this_root_pos[0] - origin_pos[0]) + sq(this_root_pos[1] - origin_pos[1]));
-      //// theta
-      float this_feather_angle = m_angle_hand + asin(segment_last_to_origin * sin(PI - angle_hand_last_primary) / segment_origin_to_root);
-      
+    // Place primary feather tips    
+    for (int i = 0; i < n_primaries; ++i) {
+      float rel_spacing = float(i) / float(n_primaries - 1);
+      float angle = lerp(angle_hand_last_primary, angle_hand_first_primary, rel_spacing);
       float[] feather_tip = {
-        roots[i][0] + l_primaries * cos(this_feather_angle),
-        roots[i][1] + l_primaries * sin(this_feather_angle)
+        roots[i][0] + l_primaries * cos(m_angle_hand + angle),
+        roots[i][1] + l_primaries * sin(m_angle_hand + angle)
       };
       tips[i] = feather_tip;
     }
