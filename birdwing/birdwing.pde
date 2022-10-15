@@ -1,21 +1,19 @@
 // Arm parameters
-float[] wing_origin = {0.0, 100.0};
+float[] wing_origin = {0.0, 200.0};
 float l_humerus = 100.0;
 float l_ulna = 240.0;
 float l_hand = 200.0;
-float angle_shoulder = deg_to_rad(60.0);
-float angle_elbow = deg_to_rad(-90.0);
-float angle_wrist = deg_to_rad(50.0);
+float angle_shoulder = deg_to_rad(45.0);
+float angle_elbow = deg_to_rad(-60.0);
+float angle_wrist = deg_to_rad(25.0);
 
 // Feather parameters
 float angle_hand_first_primary = deg_to_rad(5.0);
-float angle_hand_last_primary = deg_to_rad(60.0);
-float angle_ulna_first_secondary = deg_to_rad(100.0);
-float angle_ulna_last_secondary = deg_to_rad(130.0);
+float angle_ulna_last_secondary = deg_to_rad(120.0);
 
 int n_primaries = 10;
 int n_secondaries = 10;
-float l_primaries = 100.0;
+float l_primaries = 120.0;
 float l_secondaries = 120.0;
 
 // Colours
@@ -101,7 +99,7 @@ class Wing {
     // Place primary feather roots
     for (int i = 0; i < n_primaries; ++i) {
       float rel_spacing = float(i + 1) / float (n_primaries + 1);
-      float l_spacing = lerp(0, m_l_hand, rel_spacing);
+      float l_spacing = lerp(m_l_hand, 0, rel_spacing);
       float[] feather_root = {
         m_wrist_position[0] + l_spacing * cos(m_angle_hand),
         m_wrist_position[1] + l_spacing * sin(m_angle_hand)
@@ -111,8 +109,8 @@ class Wing {
 
     // Place secondary feather roots
     for (int i = 0; i < n_secondaries; ++i) {
-      float rel_spacing = float(i + 1) / float (n_secondaries + 1);
-      float l_spacing = lerp(0, m_l_ulna, rel_spacing);
+      float rel_spacing = float(i) / float (n_secondaries - 1);
+      float l_spacing = lerp(m_l_ulna, 0, rel_spacing);
       float[] feather_root = {
         m_elbow_position[0] + l_spacing * cos(m_angle_ulna),
         m_elbow_position[1] + l_spacing * sin(m_angle_ulna)
@@ -120,24 +118,27 @@ class Wing {
       roots[n_primaries + i] = feather_root;
     }
     
+    float abs_angle_first = m_angle_hand + angle_hand_first_primary;
+    float abs_angle_last = m_angle_ulna + angle_ulna_last_secondary;
+    
     // Place primary feather tips    
     for (int i = 0; i < n_primaries; ++i) {
-      float rel_spacing = float(i) / float(n_primaries - 1);
-      float angle = lerp(angle_hand_last_primary, angle_hand_first_primary, rel_spacing);
+      float angle_spacing = float(i) / float(n_feathers - 1);
+      float angle = lerp(abs_angle_first, abs_angle_last, angle_spacing);
       float[] feather_tip = {
-        roots[i][0] + l_primaries * cos(m_angle_hand + angle),
-        roots[i][1] + l_primaries * sin(m_angle_hand + angle)
+        roots[i][0] + l_primaries * cos(angle),
+        roots[i][1] + l_primaries * sin(angle)
       };
       tips[i] = feather_tip;
     }
     
     // Place secondary feather tips
     for (int i = 0; i < n_secondaries; ++i) {
-      float rel_spacing = float(i) / float(n_secondaries - 1);
-      float angle = lerp(angle_ulna_last_secondary, angle_ulna_first_secondary, rel_spacing);
+      float angle_spacing = float(n_primaries + i) / float(n_feathers - 1);
+      float angle = lerp(abs_angle_first, abs_angle_last, angle_spacing);
       float[] feather_tip = {
-        roots[n_primaries + i][0] + l_secondaries * cos(m_angle_ulna + angle),
-        roots[n_primaries + i][1] + l_secondaries * sin(m_angle_ulna + angle)
+        roots[n_primaries + i][0] + l_secondaries * cos(angle),
+        roots[n_primaries + i][1] + l_secondaries * sin(angle)
       };
       tips[n_primaries + i] = feather_tip;
     }
@@ -168,6 +169,7 @@ class Wing {
       m_phalanx_position[0], m_phalanx_position[1]
       );
 
+    // Draw feathers
     stroke(col_primaries);
     for (int i = 0; i < n_primaries; ++i) {
       m_plumage[i].draw();
@@ -195,4 +197,8 @@ class Feather {
 float deg_to_rad(float angle_degrees)
 {
   return angle_degrees * PI / 180.0;
+}
+float rad_to_deg(float angle_rads)
+{
+  return angle_rads / PI * 180.0;
 }
