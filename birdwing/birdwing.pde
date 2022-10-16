@@ -10,7 +10,6 @@ float angle_wrist = deg_to_rad(25.0);
 // Feather parameters
 float angle_hand_first_primary = deg_to_rad(5.0);
 float angle_ulna_last_secondary = deg_to_rad(120.0);
-
 int n_primaries = 10;
 int n_secondaries = 10;
 float l_primaries = 120.0;
@@ -20,8 +19,10 @@ float l_secondaries = 120.0;
 color col_humerus = #35bfd7;
 color col_ulna = #e8656a;
 color col_hand = #2d9003;
-color col_primaries = #f15025;
-color col_secondaries = #44cef6;
+color col_rachis_primaries = #f15025;
+color col_rachis_secondaries = #44cef6;
+color col_vane_primaries = #657065;
+color col_vane_secondaries = #b1c0bf;
 
 Wing bird_wing;
 
@@ -35,7 +36,8 @@ void setup() {
     col_humerus, col_ulna, col_hand,
     n_primaries, n_secondaries,
     l_primaries, l_secondaries,
-    col_primaries, col_secondaries,
+    col_rachis_primaries, col_rachis_secondaries,
+    col_vane_primaries, col_vane_secondaries,
     angle_hand_first_primary, angle_ulna_last_secondary 
     );
 }
@@ -57,8 +59,8 @@ class Wing {
   int m_n_primaries, m_n_secondaries, m_n_feathers;
   float m_angle_hand_first_primary, m_angle_ulna_last_secondary;
   float m_l_primaries, m_l_secondaries;
-  color m_col_primaries, m_col_secondaries;
-
+  color m_col_rachis_primaries, m_col_rachis_secondaries;
+  color m_col_vane_primaries, m_col_vane_secondaries;
 
   Wing(float[] shoulder_position,
     float l_humerus, float l_ulna, float l_hand,
@@ -66,7 +68,8 @@ class Wing {
     color col_humerus, color col_ulna, color col_hand,
     int n_primaries, int n_secondaries,
     float l_primaries, float l_secondaries,
-    color col_primaries, color col_secondaries,
+    color col_rachis_primaries, color col_rachis_secondaries,
+    color col_vane_primaries, color col_vane_secondaries,
     float angle_hand_first_primary, float angle_ulna_last_secondary
     )
   {
@@ -92,8 +95,10 @@ class Wing {
     m_l_secondaries = l_secondaries;
     m_angle_hand_first_primary = angle_hand_first_primary;
     m_angle_ulna_last_secondary = angle_ulna_last_secondary;
-    m_col_primaries = col_primaries;
-    m_col_secondaries = col_secondaries;
+    m_col_rachis_primaries = col_rachis_primaries;
+    m_col_rachis_secondaries = col_rachis_secondaries;
+    m_col_vane_primaries = col_vane_primaries;
+    m_col_vane_secondaries = col_vane_secondaries;
     place_plumage();
   }
   
@@ -135,7 +140,12 @@ class Wing {
         feather_root[0] + m_l_primaries * cos(angle_feather),
         feather_root[1] + m_l_primaries * sin(angle_feather)
       };
-      m_plumage[i] = new Feather(feather_root, feather_tip, m_col_primaries);
+      m_plumage[i] = new Feather(
+        feather_root, 
+        feather_tip, 
+        m_col_rachis_primaries, 
+        m_col_vane_primaries
+      );
     }
     
     // Place secondary feathers
@@ -154,7 +164,12 @@ class Wing {
         feather_root[0] + m_l_secondaries * cos(angle_feather),
         feather_root[1] + m_l_secondaries * sin(angle_feather)
       };
-      m_plumage[m_n_primaries + i] = new Feather(feather_root, feather_tip, m_col_secondaries);
+      m_plumage[m_n_primaries + i] = new Feather(
+        feather_root, 
+        feather_tip, 
+        m_col_rachis_secondaries, 
+        m_col_vane_secondaries
+       );
     }
   }
 
@@ -186,15 +201,25 @@ class Wing {
 
 class Feather {
   float[] m_root, m_tip;
-  color m_rachis_color;
-  Feather(float[] root, float[] tip, color rachis_col)
+  color m_rachis_color, m_vane_color;
+  float m_vane_start = 1.0 / 3.0;
+  float m_vane_rel_size = 1.0;
+  
+  Feather(float[] root, float[] tip, color rachis_col, color vane_col)
   {
     m_root = root;
     m_tip = tip;
     m_rachis_color = rachis_col;
+    m_vane_color = vane_col;
   }
   void draw()
   {
+    /// Draw vane first
+    stroke(m_vane_color);
+    fill(m_vane_color);
+    ellipseMode(CORNERS);
+    ellipse(m_root[0], m_root[1], m_tip[0], m_tip[1]);
+    /// Draw rachis on top
     stroke(m_rachis_color);
     line(m_root[0], m_root[1], m_tip[0], m_tip[1]);
   }
