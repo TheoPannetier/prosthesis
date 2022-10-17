@@ -202,9 +202,10 @@ class Wing {
 class Feather {
   float[] m_root, m_tip;
   color m_rachis_color, m_vane_color;
-  float m_vane_start = 1.0 / 3.0;
-  float m_vane_rel_size = 1.0;
-  
+  float m_vane_start = 0.3;
+  float m_vane_rel_length = 1.0;
+  float m_vane_rel_width= 0.2;
+
   Feather(float[] root, float[] tip, color rachis_col, color vane_col)
   {
     m_root = root;
@@ -217,8 +218,9 @@ class Feather {
     /// Draw vane first
     stroke(m_vane_color);
     fill(m_vane_color);
-    ellipseMode(CORNERS);
-    ellipse(m_root[0], m_root[1], m_tip[0], m_tip[1]);
+    //float vane_length = distance();
+    //ellipse(m_root[0], m_root[1], m_tip[0], m_tip[1]);
+    
     /// Draw rachis on top
     stroke(m_rachis_color);
     line(m_root[0], m_root[1], m_tip[0], m_tip[1]);
