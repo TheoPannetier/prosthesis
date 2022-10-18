@@ -3,13 +3,13 @@ float[] wing_origin = {0.0, 200.0};
 float l_humerus = 100.0;
 float l_ulna = 240.0;
 float l_hand = 200.0;
-float angle_shoulder = deg_to_rad(45.0);
-float angle_elbow = deg_to_rad(-60.0);
-float angle_wrist = deg_to_rad(25.0);
+float angle_shoulder = radians(45.0);
+float angle_elbow = radians(-60.0);
+float angle_wrist = radians(25.0);
 
 // Feather parameters
-float angle_hand_first_primary = deg_to_rad(5.0);
-float angle_ulna_last_secondary = deg_to_rad(120.0);
+float angle_hand_first_primary = radians(5.0);
+float angle_ulna_last_secondary = radians(120.0);
 int n_primaries = 10;
 int n_secondaries = 10;
 float l_primaries = 120.0;
@@ -243,14 +243,4 @@ class Feather {
     stroke(m_rachis_color);
     line(m_root[0], m_root[1], m_tip[0], m_tip[1]);
   }
-}
-
-float deg_to_rad(float angle_degrees)
-{
-  return angle_degrees * PI / 180.0;
-}
-
-float rad_to_deg(float angle_rads)
-{
-  return angle_rads / PI * 180.0;
 }
