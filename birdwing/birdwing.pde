@@ -14,6 +14,8 @@ int n_primaries = 10;
 int n_secondaries = 10;
 float l_primaries = 120.0;
 float l_secondaries = 120.0;
+float l_primary_coverts = 50.0;
+float l_secondary_coverts = 50.0;
 
 // Colours
 color col_humerus = #35bfd7;
@@ -23,6 +25,8 @@ color col_rachis_primaries = #f15025;
 color col_rachis_secondaries = #44cef6;
 color col_vane_primaries = #657065;
 color col_vane_secondaries = #b1c0bf;
+color col_primary_coverts = #0078d4;
+color col_secondary_coverts = #ed2226;
 
 Wing bird_wing;
 
@@ -38,7 +42,9 @@ void setup() {
     l_primaries, l_secondaries,
     col_rachis_primaries, col_rachis_secondaries,
     col_vane_primaries, col_vane_secondaries,
-    angle_hand_first_primary, angle_ulna_last_secondary 
+    angle_hand_first_primary, angle_ulna_last_secondary,
+    l_primary_coverts, col_primary_coverts, 
+    l_secondary_coverts, col_secondary_coverts
     );
 }
 
@@ -61,6 +67,8 @@ class Wing {
   float m_l_primaries, m_l_secondaries;
   color m_col_rachis_primaries, m_col_rachis_secondaries;
   color m_col_vane_primaries, m_col_vane_secondaries;
+  float m_l_primary_coverts, m_l_secondary_coverts;
+  color m_col_primary_coverts, m_col_secondary_coverts;
 
   Wing(float[] shoulder_position,
     float l_humerus, float l_ulna, float l_hand,
@@ -70,7 +78,9 @@ class Wing {
     float l_primaries, float l_secondaries,
     color col_rachis_primaries, color col_rachis_secondaries,
     color col_vane_primaries, color col_vane_secondaries,
-    float angle_hand_first_primary, float angle_ulna_last_secondary
+    float angle_hand_first_primary, float angle_ulna_last_secondary,
+    float l_primary_coverts, color col_primary_coverts, 
+    float l_secondary_coverts, color col_secondary_coverts
     )
   {
     // Build arm
@@ -99,6 +109,10 @@ class Wing {
     m_col_rachis_secondaries = col_rachis_secondaries;
     m_col_vane_primaries = col_vane_primaries;
     m_col_vane_secondaries = col_vane_secondaries;
+    m_l_primary_coverts = l_primary_coverts;
+    m_l_secondary_coverts = l_secondary_coverts;
+    m_col_primary_coverts = col_primary_coverts;
+    m_col_secondary_coverts = col_secondary_coverts;
     place_plumage();
   }
   
