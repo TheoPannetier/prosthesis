@@ -1,4 +1,4 @@
-// Arm parameters
+ //Arm parameters
 float[] wing_origin = {0.0, 200.0};
 float l_humerus = 100.0;
 float l_ulna = 240.0;
@@ -14,8 +14,8 @@ int n_primaries = 10;
 int n_secondaries = 10;
 float l_primaries = 120.0;
 float l_secondaries = 120.0;
-float l_primary_coverts = 50.0;
-float l_secondary_coverts = 50.0;
+float l_primary_coverts = l_primaries * 0.6;
+float l_secondary_coverts = l_secondaries * 0.6;
 
 // Colours
 color col_humerus = #35bfd7;
@@ -27,6 +27,7 @@ color col_vane_primaries = #657065;
 color col_vane_secondaries = #b1c0bf;
 color col_primary_coverts = #0078d4;
 color col_secondary_coverts = #ed2226;
+color col_marginal_coverts = #008000;
 
 Wing bird_wing;
 
@@ -44,7 +45,8 @@ void setup() {
     col_vane_primaries, col_vane_secondaries,
     angle_hand_first_primary, angle_ulna_last_secondary,
     l_primary_coverts, col_primary_coverts, 
-    l_secondary_coverts, col_secondary_coverts
+    l_secondary_coverts, col_secondary_coverts,
+    col_marginal_coverts
     );
 }
 

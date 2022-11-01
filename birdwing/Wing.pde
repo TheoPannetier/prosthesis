@@ -15,6 +15,7 @@ class Wing {
   color m_col_vane_primaries, m_col_vane_secondaries;
   float m_l_primary_coverts, m_l_secondary_coverts;
   color m_col_primary_coverts, m_col_secondary_coverts;
+  color m_col_marginal_coverts;
 
   Wing(float[] shoulder_position,
     float l_humerus, float l_ulna, float l_hand,
@@ -26,7 +27,8 @@ class Wing {
     color col_vane_primaries, color col_vane_secondaries,
     float angle_hand_first_primary, float angle_ulna_last_secondary,
     float l_primary_coverts, color col_primary_coverts, 
-    float l_secondary_coverts, color col_secondary_coverts
+    float l_secondary_coverts, color col_secondary_coverts,
+    color col_marginal_coverts
     )
   {
     // Build arm
@@ -59,6 +61,7 @@ class Wing {
     m_l_secondary_coverts = l_secondary_coverts;
     m_col_primary_coverts = col_primary_coverts;
     m_col_secondary_coverts = col_secondary_coverts;
+    m_col_marginal_coverts = col_marginal_coverts;
     place_plumage();
   }
   
@@ -158,6 +161,28 @@ class Wing {
 
   void draw()
   {
+    stroke(m_col_marginal_coverts);
+    fill(m_col_marginal_coverts);
+    pushMatrix();
+    
+    translate(m_shoulder_position[0], m_shoulder_position[1]);
+    rotate(m_angle_humerus);
+    ellipse(m_l_humerus / 2.0, 0.0, m_l_humerus, 40.0);
+    
+    popMatrix();
+    pushMatrix();
+    translate(m_elbow_position[0], m_elbow_position[1]);
+    rotate(m_angle_ulna);
+    ellipse(m_l_ulna / 2.0, 0.0, m_l_ulna, 90.0);
+    
+    popMatrix();
+    pushMatrix();
+    translate(m_wrist_position[0], m_wrist_position[1]);
+    rotate(m_angle_hand);
+    ellipse(m_l_hand / 2.0, 0.0, m_l_hand, 60.0);
+    
+    popMatrix();
+
     // Draw arm
     stroke(m_col_humerus);
     line(
