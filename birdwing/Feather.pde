@@ -1,13 +1,18 @@
 class Feather {
   float[] m_root, m_tip;
   color m_rachis_color, m_vane_color;
-  float m_vane_rel_origin = 0.2;
-  float m_vane_rel_length = 1.5;
-  float m_vane_rel_width= 0.3;
+  float m_vane_rel_origin;
+  float m_vane_rel_length;
+  float m_vane_rel_width;
   float m_rachis_length;
   float m_angle;
 
-  Feather(float[] root, float[] tip, color rachis_col, color vane_col)
+  Feather(float[] root, float[] tip, 
+          color rachis_col, color vane_col,
+          float vane_rel_origin,
+          float vane_rel_length,
+          float vane_rel_width
+          )
   {
     m_root = root;
     m_tip = tip;
@@ -15,6 +20,9 @@ class Feather {
     m_vane_color = vane_col;
     m_rachis_length = dist(m_root[0], m_root[1], m_tip[0], m_tip[1]);
     m_angle = acos((m_tip[0] - m_root[0]) / m_rachis_length);
+    m_vane_rel_origin = vane_rel_origin;
+    m_vane_rel_length = vane_rel_length;
+    m_vane_rel_width = vane_rel_width;
   }
   void draw()
   {

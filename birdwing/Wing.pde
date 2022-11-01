@@ -87,7 +87,15 @@ class Wing {
 
     float abs_angle_first = m_angle_hand + m_angle_hand_first_primary;
     float abs_angle_last = m_angle_ulna + m_angle_ulna_last_secondary;
-
+     
+    // Control vane position relative to rachis
+    float vane_rel_origin = 0.2;
+    float vane_rel_length = 1.5;
+    float vane_rel_width = 0.3;
+    float vane_rel_origin_coverts = 0.1;
+    float vane_rel_length_coverts = 1.5;
+    float vane_rel_width_coverts = 0.4;
+    
     // Place primary feathers
     for (int i = 0; i < m_n_primaries; ++i) {
 
@@ -108,7 +116,10 @@ class Wing {
         feather_root, 
         feather_tip, 
         m_col_rachis_primaries, 
-        m_col_vane_primaries
+        m_col_vane_primaries,
+        vane_rel_origin,
+        vane_rel_length,
+        vane_rel_width
       );
       
       float[] covert_tip = {
@@ -119,7 +130,10 @@ class Wing {
         feather_root, 
         covert_tip, 
         m_col_primary_coverts, 
-        m_col_primary_coverts
+        m_col_primary_coverts,
+        vane_rel_origin_coverts,
+        vane_rel_length_coverts,
+        vane_rel_width_coverts
       ); 
     }
     
@@ -143,7 +157,10 @@ class Wing {
         feather_root, 
         feather_tip, 
         m_col_rachis_secondaries, 
-        m_col_vane_secondaries
+        m_col_vane_secondaries,
+        vane_rel_origin,
+        vane_rel_length,
+        vane_rel_width
        );
        
        float[] covert_tip = {
@@ -154,13 +171,17 @@ class Wing {
         feather_root, 
         covert_tip, 
         m_col_secondary_coverts, 
-        m_col_secondary_coverts
+        m_col_secondary_coverts,
+        vane_rel_origin_coverts,
+        vane_rel_length_coverts,
+        vane_rel_width_coverts
        );
     }
   }
 
   void draw()
   {
+    // Draw armborne marginal coverts
     stroke(m_col_marginal_coverts);
     fill(m_col_marginal_coverts);
     pushMatrix();
@@ -173,17 +194,17 @@ class Wing {
     pushMatrix();
     translate(m_elbow_position[0], m_elbow_position[1]);
     rotate(m_angle_ulna);
-    ellipse(m_l_ulna / 2.0, 0.0, m_l_ulna, 90.0);
+    ellipse(m_l_ulna / 2.0, 0.0, m_l_ulna, 40.0);
     
     popMatrix();
     pushMatrix();
     translate(m_wrist_position[0], m_wrist_position[1]);
     rotate(m_angle_hand);
-    ellipse(m_l_hand / 2.0, 0.0, m_l_hand, 60.0);
+    ellipse(m_l_hand / 2.0, 0.0, m_l_hand, 40.0);
     
     popMatrix();
 
-    // Draw arm
+    // Draw arm bones
     stroke(m_col_humerus);
     line(
       m_shoulder_position[0], m_shoulder_position[1],
